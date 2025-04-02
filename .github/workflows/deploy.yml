@@ -24,6 +24,11 @@ env:
   IAM_ROLE: arn:aws:iam::715841357798:role/OIDC-github-role
   REGION: us-east-1
 
+permissions:
+  packages: write
+  contents: read
+  id-token: write
+
 jobs:
   terraform:
     runs-on: ubuntu-latest
