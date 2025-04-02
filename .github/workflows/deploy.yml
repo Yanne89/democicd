@@ -1,4 +1,4 @@
-name: Deploy Auto Scaling Web App
+name: Deploy ASG Web App
 
 on:
   push:
@@ -22,6 +22,7 @@ on:
 env:
   TF_IN_AUTOMATION: true
   REGION: us-east-1
+  IAM_ROLE: arn:aws:iam::715841357798:role/OIDC-github-role
 
 jobs:
   terraform:
@@ -37,11 +38,11 @@ jobs:
           terraform_version: 1.6.0
 
       - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
+        uses: aws-actions/configure-aws-credentials@v1.7.0
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.REGION }}
+            role-to-assume: ${{ env.IAM_ROLE }}
+            role-session-name: GitHub_to_AWS_via_FederatedOIDC
+            aws-region: ${{ env.REGION }}
 
       - name: Terraform Init
         run: terraform init
