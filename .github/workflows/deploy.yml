@@ -21,8 +21,8 @@ on:
                 - "destroy"
 env:
   TF_IN_AUTOMATION: true
-  REGION: us-east-1
   IAM_ROLE: arn:aws:iam::715841357798:role/OIDC-github-role
+  REGION: us-east-1
 
 jobs:
   terraform:
