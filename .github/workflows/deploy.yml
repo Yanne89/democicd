@@ -86,8 +86,8 @@ jobs:
             role-session-name: GitHub_to_AWS_via_FederatedOIDC
             aws-region: ${{ env.REGION }}
 
-      - name: Terraform Init
-        run: terraform init
+      # - name: Terraform Init
+      #   run: terraform init -reconfigure
 
       - name: Terraform Apply
         working-directory: ${{ env.DEPLOYMENT_PATH }}
@@ -116,8 +116,8 @@ jobs:
             role-session-name: GitHub_to_AWS_via_FederatedOIDC
             aws-region: ${{ env.REGION }}
 
-      - name: Terraform Init
-        run: terraform init
+      # - name: Terraform Init
+      #   run: terraform init
 
       - name: Terraform Destroy
         working-directory: ${{ env.DEPLOYMENT_PATH }}
