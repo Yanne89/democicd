@@ -64,9 +64,9 @@ jobs:
         run: terraform plan 
 
   Apply:
-    # needs: Plan
+    needs: Plan
     runs-on: ubuntu-latest
-    # if: github.event_name == 'workflow_dispatch' && github.event.inputs.terraform_action == 'apply'
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.terraform_action == 'apply'
     defaults:
       run:
         shell: bash
