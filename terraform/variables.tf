@@ -1,78 +1,91 @@
 variable "region" {
   description = "The AWS region to deploy resources in"
   type        = string
-  default     = "us-east-1"
+  # default     = "us-east-1"
 }
 
 variable "vpc_name" {
   description = "The name of the VPC"
   type        = string
-  default     = "main-vpc"
+  # default     = "myASG-vpc"
 }
 
 variable "ami_id" {
   description = "The AMI ID for the EC2 instances"
   type        = string
+  # default     = "ami-00a929b66ed6e0de6" # Replace with your AMI ID
 }
 
 variable "instance_type" {
   description = "The instance type for the EC2 instances"
   type        = string
-  default     = "t2.micro"
+  # default     = "t2.micro"
 }
 
 variable "vpc_cidr" {
   description = "The CIDR block for the VPC"
   type        = string
-  default     = "10.0.0.0/16"
+  # default     = "10.0.0.0/16"
 }
 
 variable "subnet_cidr" {
   description = "The CIDR block for the public subnet"
   type        = string
-  default     = "10.0.1.0/24"
+  # default     = "10.0.1.0/24"
+}
+
+variable "subnet_cidr_2" {
+  description = "The CIDR block for the second public subnet"
+  type        = string
+  default     = "10.0.2.0/24"
+}
+
+variable "availability_zone_2" {
+  description = "The availability zone for the second public subnet"
+  type        = string
+  default     = "us-east-1b"
 }
 
 variable "availability_zone" {
   description = "The availability zone for the public subnet"
   type        = string
-  default     = "us-east-1a"
+  # default     = "us-east-1a"
 }
 
 variable "desired_capacity" {
   description = "The desired capacity of the Auto Scaling group"
   type        = number
-  default     = 2
+  # default     = 2
 }
 
 variable "max_size" {
   description = "The maximum size of the Auto Scaling group"
   type        = number
-  default     = 3
+  # default     = 3
 }
 
 variable "min_size" {
   description = "The minimum size of the Auto Scaling group"
   type        = number
-  default     = 1
+  # default     = 1
 }
 
 variable "webapp_name" {
   description = "The name tag for the web application instances"
   type        = string
-  default     = "WebAppInstance"
+  # default     = "WebAppInstance"
 }
 
 variable "sg_name" {
   description = "Name of the security group"
   type        = string
-  default     = "web-sg"
+  # default     = "web-sg"
 }
 
 variable "sg_description" {
   description = "Description of the security group"
   type        = string
-  default     = "Allow HTTP and SSH traffic"
+  # default     = "Allow HTTP and SSH traffic"
 }
 
 variable "sg_ingress_rules" {

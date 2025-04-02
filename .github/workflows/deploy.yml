@@ -1,0 +1,124 @@
+name: Deploy ASG Web App
+
+on:
+  push:
+    branches:
+      - main
+      - "*"
+
+    paths:
+        - "terraform/**/*"     
+
+  workflow_dispatch:
+    inputs:
+        terraform_action:
+          description: "Select the terraform action to perform"
+          required: true
+          type: choice
+          options:
+                - "plan"
+                - "apply"
+                - "destroy"
+env:
+  TF_IN_AUTOMATION: true
+  IAM_ROLE: arn:aws:iam::715841357798:role/OIDC-github-role
+  REGION: us-east-1
+  DEPLOYMENT_PATH: terraform
+
+permissions:
+  packages: write
+  contents: read
+  id-token: write
+
+jobs:
+  Plan:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-latest]
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ env.DEPLOYMENT_PATH }}
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.0
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1.7.0
+        with:
+            role-to-assume: ${{ env.IAM_ROLE }}
+            role-session-name: GitHub_to_AWS_via_FederatedOIDC
+            aws-region: ${{ env.REGION }}
+      
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan 
+
+  Apply:
+    # needs: Plan
+    runs-on: ubuntu-latest
+    # if: github.event_name == 'workflow_dispatch' && github.event.inputs.terraform_action == 'apply'
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.0
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1.7.0
+        with:
+            role-to-assume: ${{ env.IAM_ROLE }}
+            role-session-name: GitHub_to_AWS_via_FederatedOIDC
+            aws-region: ${{ env.REGION }}
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Apply
+        working-directory: ${{ env.DEPLOYMENT_PATH }}
+        run: terraform apply -var-file=terraform.tfvars
+
+  Destroy:
+    needs: Plan
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.terraform_action == 'destroy'
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.6.0
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1.7.0
+        with:
+            role-to-assume: ${{ env.IAM_ROLE }}
+            role-session-name: GitHub_to_AWS_via_FederatedOIDC
+            aws-region: ${{ env.REGION }}
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Destroy
+        working-directory: ${{ env.DEPLOYMENT_PATH }}
+        run: terraform destroy -var-file=terraform.tfvars
