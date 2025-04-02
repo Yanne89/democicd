@@ -20,6 +20,17 @@ resource "aws_subnet" "public" {
   }
 }
 
+resource "aws_subnet" "public_2" {
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = var.subnet_cidr_2
+  map_public_ip_on_launch = true
+  availability_zone       = var.availability_zone_2
+
+  tags = {
+    Name = "public-subnet-2"
+  }
+}
+
 resource "aws_security_group" "web_sg" {
   name        = var.sg_name
   description = var.sg_description
@@ -116,7 +127,7 @@ resource "aws_lb" "web_lb" {
   internal           = false
   load_balancer_type = "application"
   security_groups    = [aws_security_group.web_sg.id]
-  subnets            = [aws_subnet.public.id]
+  subnets            = [aws_subnet.public.id, aws_subnet.public_2.id]
 
   tags = {
     Name = "web-load-balancer"
