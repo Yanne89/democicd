@@ -4,7 +4,21 @@ on:
   push:
     branches:
       - main
+      - "*"
 
+    paths:
+        - "terraform/**/*"     
+
+  workflow_dispatch:
+    inputs:
+        terraform_action:
+          description: "Select the tarraform action to perform"
+          required: true
+          type: choice
+          options:
+                - "plan"
+                - "apply"
+                - "destroy"
 env:
   TF_IN_AUTOMATION: true
   REGION: us-east-1
