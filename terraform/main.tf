@@ -13,7 +13,7 @@ resource "aws_internet_gateway" "main" {
   vpc_id = aws_vpc.main.id
 
   tags = {
-    Name = "main-internet-gateway"
+    Name = var.aws_internet_gateway
   }
 }
 
@@ -24,7 +24,7 @@ resource "aws_subnet" "public" {
   availability_zone       = var.availability_zone
 
   tags = {
-    Name = "public-subnet"
+    Name = var.subnet_name
   }
 }
 
@@ -35,7 +35,7 @@ resource "aws_subnet" "public_2" {
   availability_zone       = var.availability_zone_2
 
   tags = {
-    Name = "public-subnet-2"
+    Name = var.subnet_name_2
   }
 }
 
@@ -73,12 +73,12 @@ resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block = var.route_cidr_block
     gateway_id = aws_internet_gateway.main.id
   }
 
   tags = {
-    Name = "public-route-table"
+    Name = var.route_table_name
   }
 }
 
@@ -114,16 +114,16 @@ resource "aws_lb_target_group" "web_tg" {
 }
 
 resource "aws_launch_template" "web" {
-  name_prefix            = "web-lt"
+  name_prefix            = var.lt_name_prefix
   image_id               = var.ami_id
   instance_type          = var.instance_type
-  user_data              = base64encode("#!/bin/bash\nyum install -y nginx\nsystemctl start nginx")
+  user_data              = base64encode(var.user_data_script)
   vpc_security_group_ids = [aws_security_group.web_sg.id]
 
   tag_specifications {
     resource_type = "instance"
     tags = {
-      Name = "web-instance"
+      Name = var.instance_name
     }
   }
 }
@@ -148,27 +148,27 @@ resource "aws_autoscaling_group" "web_asg" {
 
   tag {
     key                 = "Environment"
-    value               = "dev"
+    value               = var.environment
     propagate_at_launch = true
   }
 }
 
 resource "aws_lb" "web_lb" {
-  name               = "web-load-balancer"
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [aws_security_group.web_sg.id]
+  name               = var.lb_name
+  internal           = var.lb_internal
+  load_balancer_type = var.lb_type
+  security_groups    = [aws_security_group.lb_sg.id]
   subnets            = [aws_subnet.public.id, aws_subnet.public_2.id]
 
   tags = {
-    Name = "web-load-balancer"
+    Name = var.lb_name
   }
 }
 
 resource "aws_lb_listener" "web_listener" {
   load_balancer_arn = aws_lb.web_lb.arn
-  port              = 80
-  protocol          = "HTTP"
+  port              = var.listener_port
+  protocol          = var.listener_protocol
 
   default_action {
     type             = "forward"

@@ -1,191 +1,224 @@
 variable "region" {
   description = "The AWS region to deploy resources in"
   type        = string
-  # default     = "us-east-1"
 }
 
 variable "vpc_name" {
   description = "The name of the VPC"
   type        = string
-  # default     = "autoscaling-vpc"
-}
-
-variable "ami_id" {
-  description = "The AMI ID for the EC2 instances"
-  type        = string
-  # default     = "ami-00a929b66ed6e0de6" # Replace with your AMI ID
-}
-
-variable "instance_type" {
-  description = "The instance type for the EC2 instances"
-  type        = string
-  # default     = "t2.micro"
 }
 
 variable "vpc_cidr" {
   description = "The CIDR block for the VPC"
   type        = string
-  # default     = "10.0.0.0/16"
 }
 
 variable "subnet_cidr" {
-  description = "The CIDR block for the public subnet"
+  description = "The CIDR block for the first public subnet"
   type        = string
-  # default     = "10.0.1.0/24"
 }
 
 variable "subnet_cidr_2" {
   description = "The CIDR block for the second public subnet"
   type        = string
-  default     = "10.0.2.0/24"
+}
+
+variable "availability_zone" {
+  description = "The availability zone for the first public subnet"
+  type        = string
 }
 
 variable "availability_zone_2" {
   description = "The availability zone for the second public subnet"
   type        = string
-  default     = "us-east-1b"
 }
 
-variable "availability_zone" {
-  description = "The availability zone for the public subnet"
+variable "ami_id" {
+  description = "The AMI ID for the EC2 instances"
   type        = string
-  # default     = "us-east-1a"
+}
+
+variable "instance_type" {
+  description = "The instance type for the EC2 instances"
+  type        = string
+}
+
+variable "lt_name_prefix" {
+  description = "The name prefix for the launch template"
+  type        = string
+}
+
+variable "instance_name" {
+  description = "The name tag for the EC2 instances"
+  type        = string
+}
+
+variable "user_data_script" {
+  description = "The user data script for the EC2 instances"
+  type        = string
 }
 
 variable "desired_capacity" {
   description = "The desired capacity of the Auto Scaling group"
   type        = number
-  # default     = 2
 }
 
 variable "max_size" {
   description = "The maximum size of the Auto Scaling group"
   type        = number
-  # default     = 3
 }
 
 variable "min_size" {
   description = "The minimum size of the Auto Scaling group"
   type        = number
-  # default     = 1
 }
 
 variable "webapp_name" {
   description = "The name tag for the web application instances"
   type        = string
-  # default     = "WebAppInstance"
 }
 
-variable "sg_name" {
-  description = "Name of the security group"
+variable "environment" {
+  description = "The environment tag for the resources"
   type        = string
-  # default     = "web-sg"
 }
 
-variable "sg_description" {
-  description = "Description of the security group"
+variable "lb_name" {
+  description = "The name of the load balancer"
   type        = string
-  # default     = "Allow HTTP and SSH traffic"
 }
 
-variable "sg_ingress_rules" {
-  description = "Ingress rules for the security group"
-  type = list(object({
-    from_port   = number
-    to_port     = number
-    protocol    = string
-    cidr_blocks = list(string)
-  }))
-  default = [
-    {
-      from_port   = 80
-      to_port     = 80
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
-    },
-    {
-      from_port   = 22
-      to_port     = 22
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
-    }
-  ]
+variable "lb_internal" {
+  description = "Whether the load balancer is internal"
+  type        = bool
 }
 
-variable "sg_egress_rules" {
-  description = "Egress rules for the security group"
-  type = list(object({
-    from_port   = number
-    to_port     = number
-    protocol    = string
-    cidr_blocks = list(string)
-  }))
-  default = [
-    {
-      from_port   = 0
-      to_port     = 0
-      protocol    = "-1"
-      cidr_blocks = ["0.0.0.0/0"]
-    }
-  ]
+variable "lb_type" {
+  description = "The type of the load balancer"
+  type        = string
+}
+
+variable "listener_port" {
+  description = "The port for the load balancer listener"
+  type        = number
+}
+
+variable "listener_protocol" {
+  description = "The protocol for the load balancer listener"
+  type        = string
 }
 
 variable "tg_name" {
-  description = "Name of the target group"
+  description = "The name of the target group"
   type        = string
-  default     = "web-target-group"
 }
 
 variable "tg_port" {
-  description = "Port for the target group"
+  description = "The port for the target group"
   type        = number
-  default     = 80
 }
 
 variable "tg_protocol" {
-  description = "Protocol for the target group"
+  description = "The protocol for the target group"
   type        = string
-  default     = "HTTP"
 }
 
 variable "tg_target_type" {
-  description = "Target type for the target group (e.g., instance, ip, lambda)"
+  description = "The target type for the target group"
   type        = string
-  default     = "instance"
 }
 
 variable "tg_health_check_path" {
-  description = "Health check path for the target group"
+  description = "The health check path for the target group"
   type        = string
-  default     = "/"
 }
 
 variable "tg_health_check_interval" {
-  description = "Health check interval for the target group"
+  description = "The health check interval for the target group"
   type        = number
-  default     = 30
 }
 
 variable "tg_health_check_timeout" {
-  description = "Health check timeout for the target group"
+  description = "The health check timeout for the target group"
   type        = number
-  default     = 5
 }
 
 variable "tg_health_check_healthy_threshold" {
-  description = "Healthy threshold for the target group"
+  description = "The healthy threshold for the target group"
   type        = number
-  default     = 2
 }
 
 variable "tg_health_check_unhealthy_threshold" {
-  description = "Unhealthy threshold for the target group"
+  description = "The unhealthy threshold for the target group"
   type        = number
-  default     = 2
 }
 
 variable "tg_health_check_protocol" {
-  description = "Health check protocol for the target group"
+  description = "The health check protocol for the target group"
   type        = string
-  default     = "HTTP"
+}
+
+variable "sg_name" {
+  description = "The name of the security group for the EC2 instances"
+  type        = string
+}
+
+variable "sg_description" {
+  description = "The description of the security group for the EC2 instances"
+  type        = string
+}
+
+variable "lb_sg_name" {
+  description = "The name of the security group for the Load Balancer"
+  type        = string
+}
+
+variable "lb_sg_description" {
+  description = "The description of the security group for the Load Balancer"
+  type        = string
+}
+
+variable "sg_ingress_rules" {
+  description = "Ingress rules for the EC2 instance security group"
+  type = list(object({
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
+  }))
+}
+
+variable "sg_egress_rules" {
+  description = "Egress rules for the EC2 instance security group"
+  type = list(object({
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
+  }))
+}
+
+variable "route_cidr_block" {
+  description = "The CIDR block for the route table"
+  type        = string
+}
+
+variable "route_table_name" {
+  description = "The name of the route table"
+  type        = string
+}
+
+variable "aws_internet_gateway" {
+  description = "Name of the AWS Internet Gateway"
+  type        = string
+}
+
+variable "subnet_name" {
+  description = "The name of the public subnet"
+  type        = string
+}
+
+variable "subnet_name_2" {
+  description = "The name of the second public subnet"
+  type        = string
 }
