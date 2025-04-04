@@ -9,10 +9,6 @@ ami_id            = "ami-00a929b66ed6e0de6"
 instance_type     = "t2.micro"
 lt_name_prefix    = "web-lt"
 instance_name     = "web-instance"
-aws_internet_gateway = "autoscaling-IGW"
-subnet_name          = "autoscaling-PSubnet"
-subnet_name_2        = "autoscaling-PSubnet2"
-route_table_name  = "public-route-table"
 user_data_script  = "#!/bin/bash\nyum install -y nginx\nsystemctl start nginx"
 desired_capacity  = 2
 max_size          = 3
@@ -39,3 +35,28 @@ sg_description    = "Allow HTTP and SSH traffic"
 lb_sg_name        = "lb-sg"
 lb_sg_description = "Allow HTTP traffic from the internet"
 route_cidr_block  = "0.0.0.0/0"
+route_table_name  = "public-route-table"
+
+sg_ingress_rules = [
+  {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  },
+  {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+]
+
+sg_egress_rules = [
+  {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+]
