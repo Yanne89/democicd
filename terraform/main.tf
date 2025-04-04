@@ -69,6 +69,42 @@ resource "aws_security_group" "web_sg" {
   }
 }
 
+resource "aws_security_group" "lb_sg" {
+  name        = var.lb_sg_name
+  description = var.lb_sg_description
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = var.lb_sg_name
+  }
+}
+
+resource "aws_lb" "web_lb" {
+  name               = var.lb_name
+  internal           = var.lb_internal
+  load_balancer_type = var.lb_type
+  security_groups    = [aws_security_group.lb_sg.id]
+  subnets            = [aws_subnet.public.id, aws_subnet.public_2.id]
+
+  tags = {
+    Name = var.lb_name
+  }
+}
+
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
 
