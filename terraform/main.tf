@@ -189,18 +189,6 @@ resource "aws_autoscaling_group" "web_asg" {
   }
 }
 
-resource "aws_lb" "web_lb" {
-  name               = var.lb_name
-  internal           = var.lb_internal
-  load_balancer_type = var.lb_type
-  security_groups    = [aws_security_group.lb_sg.id]
-  subnets            = [aws_subnet.public.id, aws_subnet.public_2.id]
-
-  tags = {
-    Name = var.lb_name
-  }
-}
-
 resource "aws_lb_listener" "web_listener" {
   load_balancer_arn = aws_lb.web_lb.arn
   port              = var.listener_port
